@@ -19,5 +19,5 @@ spec:
         image: kamposdiego/config-server:1.0.0
         ports:
         - containerPort: 8888
-          name: location
+          name: config-server
         imagePullPolicy: Always

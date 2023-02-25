@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: location-cache
+spec:
+  selector:
+    matchLabels:
+      app: location-cache
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: location-cache-pod
+      labels:
+        app: location-cache
+    spec:
+      containers:
+      - name: location-cache
+        image: kamposdiego/location-cache:1.0.0
+        ports:
+        - containerPort: 8181
+          name: location-cache
+        imagePullPolicy: Never

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: location-app
+spec:
+  selector:
+    matchLabels:
+      app: location-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: location-app-pod
+      labels:
+        app: location-app
+    spec:
+      containers:
+      - name: location-app
+        image: kamposdiego/location-app:1.0.0
+        ports:
+        - containerPort: 8180
+          name: location-app
+        imagePullPolicy: Never

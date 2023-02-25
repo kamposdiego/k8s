@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-service
+spec:
+  selector:
+    matchLabels:
+      app: redis-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: redis-service-pod
+      labels:
+        app: redis-service
+    spec:
+      containers:
+      - name: redis-service
+        image: redis:6.2.6-bullseye
+        command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+        ports:
+        - containerPort: 6379
+          name: redis
+        volumeMounts:
+        - name: redis-service-persistent-storage
+          mountPath: /data
+        imagePullPolicy: Always
+      volumes:
+        - name: redis-service-persistent-storage
+          persistentVolumeClaim:
+            claimName: redis-service-pv-claim

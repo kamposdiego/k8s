@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-service
+spec:
+  selector:
+    matchLabels:
+      app: postgresql-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: postgresql-service-pod
+      labels:
+        app: postgresql-service
+    spec:
+      containers:
+      - name: postgresql-service
+        image: kamposdiego/postgresql-service:1.0.0
+        env:
+        - name: POSTGRES_PASSWORD
+          value: postgresqlpwd
+        ports:
+        - containerPort: 5432
+          name: postgresql
+        volumeMounts:
+        - name: postgresql-service-persistent-storage
+          mountPath: /var/lib/postgresql/data
+        imagePullPolicy: Always
+      volumes:
+        - name: postgresql-service-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgresql-service-pv-claim
