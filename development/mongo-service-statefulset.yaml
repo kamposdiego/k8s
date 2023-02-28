@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-service-pv-claim
+  labels:
+    app: mongo-service
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    app: mongo-service
+  ports:
+    - protocol: TCP
+      port: 27017
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service-nodeport
+spec:
+  selector:
+    app: mongo-service
+  ports:
+    - protocol: "TCP"
+      port: 27017
+      targetPort: 27017
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    matchLabels:
+      app: mongo-service
+  serviceName: mongo-service
+  replicas: 1
+  template:
+    metadata:
+      name: mongo-service-pod
+      labels:
+        app: mongo-service
+    spec:
+      containers:
+      - name: mongo-service
+        image: mongo:5.0.5
+        ports:
+        - containerPort: 27017
+          name: mongo
+        volumeMounts:
+        - name: mongo-service-persistent-storage
+          mountPath: /data/db
+        imagePullPolicy: Never
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-service-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi
