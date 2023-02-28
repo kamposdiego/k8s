@@ -64,12 +64,8 @@ spec:
         volumeMounts:
         - name: postgresql-service-persistent-storage
           mountPath: /var/lib/postgresql/data
-        imagePullPolicy: Always
-  volumeClaimTemplates:
-  - metadata:
-      name: postgresql-service-persistent-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+        imagePullPolicy: Never
+      volumes:
+       - name: postgresql-service-persistent-storage
+         persistentVolumeClaim:
+          claimName: postgresql-service-pv-claim

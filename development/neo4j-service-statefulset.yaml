@@ -73,11 +73,7 @@ spec:
         - name: neo4j-service-persistent-storage
           mountPath: /data
         imagePullPolicy: Never
-  volumeClaimTemplates:
-  - metadata:
-      name: neo4j-service-persistent-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 2Gi
+      volumes:
+       - name: neo4j-service-persistent-storage
+         persistentVolumeClaim:
+          claimName: neo4j-service-pv-claim

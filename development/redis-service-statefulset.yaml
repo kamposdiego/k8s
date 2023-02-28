@@ -62,12 +62,8 @@ spec:
         volumeMounts:
         - name: redis-service-persistent-storage
           mountPath: /data
-        imagePullPolicy: Always
-  volumeClaimTemplates:
-  - metadata:
-      name: redis-service-persistent-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 2Gi
+        imagePullPolicy: Never
+      volumes:
+       - name: redis-service-persistent-storage
+         persistentVolumeClaim:
+          claimName: redis-service-pv-claim
