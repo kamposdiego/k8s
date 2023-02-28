@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zookeper-service-pv-claim
+  labels:
+    app: zookeper
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeper-nodeport
+spec:
+  selector:
+    app: zookeper
+  ports:
+    - protocol: TCP
+      port: 2181
+      targetPort: 2181
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeper
+spec:
+  selector:
+    app: zookeper
+  ports:
+    - protocol: TCP
+      port: 2181
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zookeper
+spec:
+  selector:
+    matchLabels:
+      app: zookeper
+  serviceName: zookeper
+  replicas: 1
+  template:
+    metadata:
+      name: zookeper-pod
+      labels:
+        app: zookeper
+    spec:
+      containers:
+      - name: zookeper
+        image: confluentinc/cp-zookeeper:6.0.11
+        env:
+        - name: ZOOKEEPER_CLIENT_PORT
+          value: "2181"
+        ports:
+        - containerPort: 2181
+          name: zookeper
+        volumeMounts:
+        - name: zookeper-service-persistent-storage
+          mountPath: /var/lib/zookeeper/data
+        imagePullPolicy: Never
+      volumes:
+       - name: zookeper-service-persistent-storage
+         persistentVolumeClaim:
+          claimName: zookeper-service-pv-claim
