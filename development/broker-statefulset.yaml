@@ -1,7 +1,13 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: broker-service-pv-claim
+  namespace: development
   labels:
     app: broker
 spec:
@@ -15,6 +21,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: broker
+  namespace: development
 spec:
   selector:
     app: broker
@@ -27,6 +34,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: broker-nodeport
+  namespace: development
 spec:
   selector:
     app: broker
@@ -40,6 +48,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: broker
+  namespace: development
 spec:
   selector:
     matchLabels:

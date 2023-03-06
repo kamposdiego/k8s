@@ -1,7 +1,13 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: zookeper-service-pv-claim
+  namespace: development  
   labels:
     app: zookeper
 spec:
@@ -15,6 +21,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeper-nodeport
+  namespace: development  
 spec:
   selector:
     app: zookeper
@@ -28,6 +35,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeper
+  namespace: development
 spec:
   selector:
     app: zookeper
@@ -40,6 +48,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zookeper
+  namespace: development
 spec:
   selector:
     matchLabels:

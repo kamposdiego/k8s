@@ -1,7 +1,13 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: neo4j-service-pv-claim
+  namespace: development
   labels:
     app: neo4j-service
 spec:
@@ -15,6 +21,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: neo4j-service
+  namespace: development  
 spec:
   selector:
     app: neo4j-service
@@ -27,6 +34,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: neo4j-service-nodeport
+  namespace: development
 spec:
   selector:
     app: neo4j-service
@@ -45,6 +53,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: neo4j-service
+  namespace: development
 spec:
   selector:
     matchLabels:
